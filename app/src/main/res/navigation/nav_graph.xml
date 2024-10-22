@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.incomelistapp2024.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_dateListFragment"
+            app:destination="@id/dateListFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/dateListFragment"
+        android:name="com.example.incomelistapp2024.DateListFragment"
+        android:label="Date List"
+        tools:layout="@layout/fragment_date_list">
+        <action
+            android:id="@+id/action_dateListFragment_to_incomeDetailsFragment"
+            app:destination="@id/incomeDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/incomeDetailsFragment"
+        android:name="com.example.incomelistapp2024.IncomeDetailsFragment"
+        android:label="Income Details"
+        tools:layout="@layout/fragment_income_details">
+    </fragment>
+</navigation>
