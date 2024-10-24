@@ -9,9 +9,25 @@
         android:name="com.example.incomelistapp2024.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login">
+
         <action
             android:id="@+id/action_loginFragment_to_dateListFragment"
-            app:destination="@id/dateListFragment"/>
+            app:destination="@id/dateListFragment" />
+
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.incomelistapp2024.RegisterFragment"
+        android:label="Register"
+        tools:layout="@layout/fragment_register">
+
+        <action
+            android:id="@+id/action_registerFragment_to_dateListFragment"
+            app:destination="@id/dateListFragment" />
     </fragment>
 
     <fragment
@@ -19,6 +35,7 @@
         android:name="com.example.incomelistapp2024.DateListFragment"
         android:label="Date List"
         tools:layout="@layout/fragment_date_list">
+
         <action
             android:id="@+id/action_dateListFragment_to_incomeDetailsFragment"
             app:destination="@id/incomeDetailsFragment" />
@@ -29,5 +46,7 @@
         android:name="com.example.incomelistapp2024.IncomeDetailsFragment"
         android:label="Income Details"
         tools:layout="@layout/fragment_income_details">
+
     </fragment>
+
 </navigation>

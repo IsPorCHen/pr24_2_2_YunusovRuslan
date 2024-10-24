@@ -4,22 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.incomelistapp2024.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
-    private var _username: String = "ipch"
-    private var _password: String = "1234"
-    private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!!
+
+    private lateinit var binding: FragmentLoginBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+    ): View? {
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -30,24 +29,15 @@ class LoginFragment : Fragment() {
             val username = binding.usernameEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
 
-            if (isLoginValid(username, password)) {
-                val action = LoginFragmentDirections.actionLoginFragmentToDateListFragment()
-                findNavController().navigate(action)
+            if (username.isNotEmpty() && password.isNotEmpty()) {
+                Toast.makeText(requireContext(), "Авторизация успешна", Toast.LENGTH_SHORT).show()
             } else {
-                if (username != _username)
-                    binding.usernameEditText.error = "Неверный логин"
-                if (password != _password)
-                    binding.passwordEditText.error = "Неверный пароль"
+                Toast.makeText(requireContext(), "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show()
             }
         }
-    }
 
-    private fun isLoginValid(username: String, password: String): Boolean {
-        return username == _username && password == _password
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        binding.registerTextView.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+        }
     }
 }
