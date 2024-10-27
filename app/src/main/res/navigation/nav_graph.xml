@@ -38,7 +38,14 @@
 
         <action
             android:id="@+id/action_dateListFragment_to_incomeDetailsFragment"
-            app:destination="@id/incomeDetailsFragment" />
+            app:destination="@id/incomeDetailsFragment">
+            <argument
+                android:name="selectedDate"
+                app:argType="string" />
+            <argument
+                android:name="incomeAmount"
+                app:argType="string" />
+        </action>
     </fragment>
 
     <fragment
@@ -47,6 +54,16 @@
         android:label="Income Details"
         tools:layout="@layout/fragment_income_details">
 
+        <argument
+            android:name="selectedDate"
+            app:argType="string" />
+        <argument
+            android:name="incomeAmount"
+            app:argType="string" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
     </fragment>
+
 
 </navigation>

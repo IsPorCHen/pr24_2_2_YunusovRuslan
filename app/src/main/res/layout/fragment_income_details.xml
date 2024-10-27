@@ -3,18 +3,37 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/incomeDetailsTextView"
-            android:layout_width="wrap_content"
+            android:id="@+id/dateTextView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Income Details" />
+            android:text="Дата: "
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp" />
 
         <TextView
-            android:id="@+id/incomeValue"
-            android:layout_width="wrap_content"
+            android:id="@+id/amountTextView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Income Value"/>
+            android:text="Сумма: "
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Редактировать" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Удалить"
+            android:layout_marginTop="8dp" />
+
     </LinearLayout>
 </layout>

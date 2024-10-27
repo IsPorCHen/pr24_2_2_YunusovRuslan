@@ -5,16 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.incomelistapp2024.Adapters.IncomeAdapter
 import com.example.incomelistapp2024.databinding.FragmentDateListBinding
-import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.Calendar
 
-data class Income(val date: String, val amount: String)
+data class Income(var date: String, var amount: String)
 
 class DateListFragment : Fragment() {
 
@@ -35,99 +35,64 @@ class DateListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = IncomeAdapter(incomeList) { position ->
-            showEditOrDeleteDialog(position)
+        adapter = IncomeAdapter(incomeList) { income, position ->
+            val action = DateListFragmentDirections
+                .actionDateListFragmentToIncomeDetailsFragment(income.date, income.amount, position)
+            findNavController().navigate(action)
         }
+
         binding.dateRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.dateRecyclerView.adapter = adapter
 
         binding.addIncomeButton.setOnClickListener {
             showAddIncomeDialog()
         }
-    }
 
-    private fun showEditOrDeleteDialog(position: Int) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Выберите действие")
-        builder.setItems(arrayOf("Редактировать", "Удалить")) { _, which ->
-            when (which) {
-                0 -> showEditIncomeDialog(position)
-                1 -> showDeleteIncomeDialog(position)
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>("deletedPosition")
+            ?.observe(viewLifecycleOwner) { deletedPosition ->
+                if (deletedPosition != null && deletedPosition in incomeList.indices) {
+                    incomeList.removeAt(deletedPosition)
+                    adapter.notifyDataSetChanged()
+                }
             }
-        }
-        builder.show()
-    }
-
-    private fun showEditIncomeDialog(position: Int) {
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_income, null)
-        val dateInput = dialogView.findViewById<EditText>(R.id.editTextDate)
-        val amountInput = dialogView.findViewById<EditText>(R.id.editTextAmount)
-
-        val currentIncome = incomeList[position]
-        dateInput.setText(currentIncome.date)
-        amountInput.setText(currentIncome.amount)
-
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Редактировать доход")
-        builder.setView(dialogView)
-        builder.setPositiveButton("Сохранить") { _, _ ->
-            val date = dateInput.text.toString()
-            val amount = amountInput.text.toString()
-            if (isValidDate(date) && amount.isNotEmpty()) {
-                incomeList[position] = Income(date, amount)
-                adapter.notifyDataSetChanged()
-                Toast.makeText(requireContext(), "Доход обновлен", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "Пожалуйста, введите корректную дату и заполните все поля", Toast.LENGTH_SHORT).show()
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>("editedPosition")
+            ?.observe(viewLifecycleOwner) { editedPosition ->
+                val editedDate = findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("editedDate")
+                val editedAmount = findNavController().currentBackStackEntry?.savedStateHandle?.get<String>("editedAmount")
+                if (editedPosition != null && editedPosition in incomeList.indices) {
+                    val income = incomeList[editedPosition]
+                    income.date = editedDate ?: income.date
+                    income.amount = editedAmount ?: income.amount
+                    adapter.notifyDataSetChanged()
+                }
             }
-        }
-        builder.setNegativeButton("Отмена", null)
-        builder.show()
-    }
 
-    private fun showDeleteIncomeDialog(position: Int) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Удалить доход")
-        builder.setMessage("Вы уверены, что хотите удалить этот доход?")
-        builder.setPositiveButton("Да") { _, _ ->
-            incomeList.removeAt(position)
-            adapter.notifyItemRemoved(position)
-            Toast.makeText(requireContext(), "Доход удален", Toast.LENGTH_SHORT).show()
-        }
-        builder.setNegativeButton("Отмена", null)
-        builder.show()
     }
 
     private fun showAddIncomeDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_income, null)
-        val dateInput = dialogView.findViewById<EditText>(R.id.editTextDate)
+        val datePicker = dialogView.findViewById<DatePicker>(R.id.datePicker)
         val amountInput = dialogView.findViewById<EditText>(R.id.editTextAmount)
+
+        val calendar = Calendar.getInstance()
+        datePicker.minDate = calendar.timeInMillis
 
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Добавить доход")
         builder.setView(dialogView)
         builder.setPositiveButton("Добавить") { _, _ ->
-            val date = dateInput.text.toString()
+            val date = "${datePicker.dayOfMonth}.${datePicker.month + 1}.${datePicker.year}"
             val amount = amountInput.text.toString()
-            if (isValidDate(date) && amount.isNotEmpty()) {
+            if (amount.isNotEmpty()) {
                 incomeList.add(Income(date, amount))
                 adapter.notifyDataSetChanged()
                 Toast.makeText(requireContext(), "Доход добавлен", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Пожалуйста, введите корректную дату и заполните все поля", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show()
             }
         }
         builder.setNegativeButton("Отмена", null)
         builder.show()
-    }
-    private fun isValidDate(date: String, format: String = "dd.MM.yyyy"): Boolean {
-        return try {
-            val sdf = SimpleDateFormat(format, Locale.getDefault())
-            sdf.isLenient = false
-            sdf.parse(date) != null
-        } catch (e: Exception) {
-            false
-        }
     }
 
     override fun onDestroyView() {

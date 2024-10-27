@@ -5,18 +5,18 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <EditText
-        android:id="@+id/editTextDate"
+    <DatePicker
+        android:id="@+id/datePicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Введите дату"
-        android:inputType="date" />
+        android:datePickerMode="spinner" />
 
     <EditText
         android:id="@+id/editTextAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Введите сумму"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>
